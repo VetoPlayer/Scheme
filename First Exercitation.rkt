@@ -76,7 +76,55 @@
   (if(null? l)
   '()
   (cons (f (car l)) (myMap f (cdr l)))))
-;; Ex 10: // TODO Let Defined with Map Excercise
+
+;; Named Let: Introduction
+;; The named let contruct lets you define a sort of procedure that is recursive in the definition itself.
+
+(define (named-let) (let ((x 0)) ;; Typical, normal use of the let construct
+  (let label () ;; NAMED LET construct!! I think it's like a function that doesn't take any arguments as input
+    (when (< x 10)
+      (display x)
+      (newline)
+      (set! x (+ x 1))
+      (label))))) ;; You recall your own definition, it's like a function call, a //GOTO
+
+;; A more correct, idiomatic way of doing the same thing is the following:
+
+(define (named-let-second)
+  (let label ((x 0))
+    (when (< x 10)
+      (display x)
+      (newline)
+      (label (+ x 1)))))
+
+
+;; Ex 10: Let Defined with Map Excercise
+
+(define (named-let-my-map fu li)
+  (let helper ((ff fu) (ll li))
+    (if (null? ll)
+        '()
+        (cons (ff (car ll)) (helper fu (cdr ll))))))
+
+;; Ex 11: checks if a number is Prime
+(define (prime? n)
+  (if (< n 3)
+      #t
+      (let label ((i 2))
+        (if (= i n)
+            #t
+            (if (= (modulo n i) 0)
+                #f
+                (label (+ i 1)))))))
+
+;; Ex 12: QuickSort algorithm: p = pivot element
+(define (my-quicksort arr)
+  (if (or (empty? arr) (empty? (cdr arr)))
+      arr
+      (let* ((p (car arr))
+             (s< (filter (lambda(x)(< x p)) (cdr arr)))
+             (s> (filter (lambda(x)(> x p)) (cdr arr))))
+             (append (my-quicksort s<) (list p) (my-quicksort s>)))))
   
   
 
