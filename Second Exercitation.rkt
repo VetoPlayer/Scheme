@@ -31,7 +31,7 @@
 
 ;; reverse map: accum is a lambda function taking ALWAYS! only a single input that is defined at every iteration.
 ;; reverse map applies the user defined lambda function over all the list but returns it as reversed:
-;; TODO: make an excercises with a cumulative lambda function that, within the recursive call, is redefined at each step.
+
 
 (define (reverse-map func lst)
   (let loop ((l lst)(acc '()))
@@ -45,15 +45,16 @@
 ;; Vector-length: counts the length of a vector and returns its length
 ;; That's how you parse a vector!
 
-;(define (vec-length vect)
-;  (define tail-vect-length vect accum)
-;    (if (??? You need to check if it's null at accum +1)
-;        accum
-;        (tail-vect-length vect (+ acc 1)))
-;  (tail-vect-length vect 0))
+(define (vec-length vect)
+  (let loop ((l (vector->list vect))(accum 0))
+    (if (null? l)
+        accum
+        (loop (cdr l)(+ accum 1)))))
 
+
+;; TODO: make an excercises with a cumulative lambda function that, within the recursive call, is redefined at each step.
 ;; Sequence returns a list of numbers between lo and hi included
-;;//TODO Named Let Version!!
+
 
 (define (sequence lo hi)
   (cond ((> lo hi) (error "figa un errore"))
@@ -61,22 +62,38 @@
         (else (cons lo '()))))
 ;; final part of writing a list: cons ... '()
 
+;;Sequence working with a Named Let Version!!
+(define (named-sequence lo hi)
+  (let loop ((l lo)(h hi))
+    (cond ((> l h) (error "figa un errore"))
+        ((< l h) (cons l (loop (+ 1 l) h)))
+        (else (cons l '())))))
+
+;; Inverse sequence: return a list of the specified sequence in the reversed order
+(define (reverse-sequence lo hi)
+  (let loop ((l lo)(h (+ 1 hi))(accum '()))
+    (cond ((> l h) (error "figa un errore"))
+        ((< l h) (loop (+ 1 l) h (cons l accum)))
+        (else accum))))
 
 
 
 
 
 
-;;vector-replace takes a mutable vector v and two values a and b. it replaces each occurence of a with b.
+;; vector-replace takes a mutable vector v and two values a and b. it replaces each occurence of a with b.
 ;; warning: you can't use this function with immutable vectors as literal vectors
 ;; It works, it just doesn't perform a print on the screen!
 ;; Try using these instructions: (vector-replace! v1 2 'a) (vector-replace! v1 2 'a)
-;; TODO: Check out the main difference between IF and WHEN
 (define (vector-replace! v a b)
   (for-each (lambda (pos)
               (when (equal? (vector-ref v pos) a)
               (vector-set! v pos b)))
             (sequence 0 (- (vector-length v) 1)))) ;; Here you are making a sequence because for-each wants as input parameter a list
+
+
+
+
 
 
 ;; easy example of for-each usage
@@ -112,7 +129,7 @@
 ; odd-only takes an indefinite number of arguments and returns a list containg only the odd ones
 ;; from now on,  use lst for indicating a list as input parameter
 ;; odd? to check whether a number is odd
-;; TODO: Make the named Let Version
+
 
 
 ;; Another possible version is to build up the result list incrementally
@@ -122,6 +139,14 @@
         ((even? (car .lst)) (odd-only (cdr .lst))) ;; while building something, just skipping to the next recursive call is ok
       )
   )
+
+;; TODO: Make the named Let Version
+
+
+
+
+
+
 
 ;; my-filter
 
@@ -135,7 +160,13 @@
 
 
 ;; reverse my filter
-
+(define (reverse-my-filter f lst)
+  (let loop ((l lst)(accum '()))
+    (if (null? l)
+        accum
+        (if (f (car l))
+            (loop (cdr l) (cons (car l) accum))
+            (loop (cdr l) accum)))))
 
 
 
